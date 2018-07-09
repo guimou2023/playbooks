@@ -1,0 +1,3 @@
+- include: install-redis-cluster.yaml
+  vars:
+    redis_version: "3.2.12"

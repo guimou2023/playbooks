@@ -1,0 +1,14 @@
+---
+- hosts: cen
+  vars:
+  remote_user: root
+  tasks:
+  - name: copy yum base conf
+    copy: src=./aliyun-mirror.repo dest=/etc/yum.repos.d
+  - name: copy yum epel conf
+    copy: src=./aliyun-epel.repo dest=/etc/yum.repos.d
+  - name: install nginx
+    yum: name=nginx state=latest
+  - name: srart httpd
+    service: name=nginx state=started
+   

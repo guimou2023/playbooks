@@ -1,0 +1,43 @@
+---
+ - name: 修改主机名
+   hostname:
+    name: "redis-{{ ansible_default_ipv4.address.split('.')[-1] }}"
+ - name: Install a list of packages
+   apt:
+     name: "{{ packages }}"
+   vars:
+     packages:
+     - make
+     - wget
+     - tcl8.5
+   when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "14.04"
+ - name: 复制redis安装包到目标主机
+   copy:
+    src: redis-3.2.12.tar.gz
+    dest: /root
+ - name: 解压redis安装包并编译
+   shell: cd && tar -xf redis-{{ redis_version }}.tar.gz && cd redis-{{ redis_version }} && make && make install PREFIX=/usr/local
+ - name: 创建文件夹
+   shell: mkdir -p /etc/redis/6379 /etc/redis/6380
+ - template:
+     src: "{{item.src}}"
+     dest: "{{item.dest}}"
+     backup: yes
+   with_items:
+     - { src: "redis-6379.conf.j2", dest: "/etc/redis/6379/redis-6379.conf"}
+     - { src: "redis-6380.conf.j2", dest: "/etc/redis/6380/redis-6380.conf"}
+#  - name: 设置开机启动
+#    lineinfile:
+#     dest: "/etc/rc.local"
+#     regexp: "rc.local"
+#     content: "/usr/local/bin/redis-server /etc/redis/6379/redis-6379.conf"
+#     dest: 
+#  - name: write the apache config file
+#    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+#    notify:
+#    - restart apache
+#  - name: ensure apache is running
+#    service: name=httpd state=started
+#  handlers:
+#    - name: restart apache
+#    service: name=httpd state=restarted

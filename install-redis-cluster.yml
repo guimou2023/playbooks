@@ -1,0 +1,6 @@
+---
+- hosts: redis-cluster-hosts
+  remote_user: root
+  gather_facts: True
+  roles:
+    - install-redis-cluster

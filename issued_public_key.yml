@@ -1,0 +1,10 @@
+---
+- hosts: redis-cluster
+  user: root
+  tasks:
+  - name: send public key to hosts
+    authorized_key:
+        user: root
+        key: "{{ lookup('file', '/var/root/.ssh/id_rsa.pub') }}"
+        state: present # present 添加 absent 删除
+        exclusive: no
