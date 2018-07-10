@@ -14,7 +14,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/local/bin/redis-server
-DAEMON_ARGS=/etc/redis/6379/redis-6379.conf
+DAEMON_ARGS=/opt/redis/6379/redis-6379.conf
 NAME=redis-server-6379
 DESC=redis-server-6379
 

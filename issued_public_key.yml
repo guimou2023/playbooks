@@ -1,5 +1,5 @@
 ---
-- hosts: redis-cluster
+- hosts: redis-cluster-hosts
   user: root
   tasks:
   - name: send public key to hosts
