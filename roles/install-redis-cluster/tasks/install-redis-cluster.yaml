@@ -1,4 +1,3 @@
----
  - name: 修改主机名
    hostname:
     name: "redis-{{ ansible_default_ipv4.address.split('.')[-1] }}"
@@ -19,25 +18,27 @@
    shell: cd && tar -xf redis-{{ redis_version }}.tar.gz && cd redis-{{ redis_version }} && make && make install PREFIX=/usr/local
  - name: 创建文件夹
    shell: mkdir -p /etc/redis/6379 /etc/redis/6380
- - template:
+ - name: 复制配置文件
+   template:
      src: "{{item.src}}"
      dest: "{{item.dest}}"
      backup: yes
    with_items:
      - { src: "redis-6379.conf.j2", dest: "/etc/redis/6379/redis-6379.conf"}
      - { src: "redis-6380.conf.j2", dest: "/etc/redis/6380/redis-6380.conf"}
-#  - name: 设置开机启动
-#    lineinfile:
-#     dest: "/etc/rc.local"
-#     regexp: "rc.local"
-#     content: "/usr/local/bin/redis-server /etc/redis/6379/redis-6379.conf"
-#     dest: 
-#  - name: write the apache config file
-#    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
-#    notify:
-#    - restart apache
-#  - name: ensure apache is running
-#    service: name=httpd state=started
-#  handlers:
-#    - name: restart apache
-#    service: name=httpd state=restarted
+ - name: 设置开机启动
+   copy: 
+    src: "{{ item }}"
+    dest: "/etc/init.d"
+    mode: 0755
+   with_items: ['redis-server-6379','redis-server-6380']
+   notify: 
+   - restart redis
+ - name: 设置开机启动软链接
+   shell: /usr/sbin/update-rc.d /etc/init.d/redis-server-6379 defaults 40
+ - name: 设置开机启动软链接
+   shell: /usr/sbin/update-rc.d /etc/init.d/redis-server-6380 defaults 40
+ - name: 启动redis服务6379
+   service: name=redis-server-6379 state=started
+ - name: 启动redis服务6380
+   service: name=redis-server-6380 state=started
