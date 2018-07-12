@@ -2,10 +2,9 @@ port 6380
 cluster-enabled yes
 cluster-config-file /opt/redis/6380/nodes-6380.conf
 cluster-node-timeout 5000
-appendonly yes
-appendfilename "appendonly.aof"
 daemonize yes
 bind {{ ansible_default_ipv4.address }} 127.0.0.1
 pidfile /opt/redis/6380/redis_6380.pid
 logfile '/opt/redis/6380/redis-6380.log'
 dir '/opt/redis/6380'
+include /opt/redis/redis-included.conf

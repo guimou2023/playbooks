@@ -32,6 +32,10 @@
     dest: "{{ item }}"
     state: directory
    with_items: ['/opt/redis/6379','/opt/redis/6380'] 
+ - name: 创建included配置文件
+   file: 
+    path: "/opt/redis/redis-included.conf"
+    state: touch
  - name: 复制配置文件
    template:
      src: "{{item.src}}"
@@ -44,15 +48,12 @@
      - { src: "redis-6380.conf.j2", dest: "/opt/redis/6380/redis-6380.conf"}
  - name: 修改文件权限
    shell: chown -R redis:redis /opt/redis
- - name: 设置开机启动
+ - name:  复制开机启动脚本
    copy: 
     src: "{{ item }}"
     dest: "/etc/init.d"
     mode: 0755
    with_items: ['redis-server-6379','redis-server-6380']
-#   notify: 
-#   - restart redis 6379
-#   - restart redis 6380
  - name: 设置开机启动软链接
    shell: /usr/sbin/update-rc.d redis-server-6379 defaults 40
  - name: 设置开机启动软链接
@@ -61,3 +62,12 @@
    service: name=redis-server-6379 state=started
  - name: 启动redis服务6380
    service: name=redis-server-6380 state=started
+ - name: 复制通用配置文件
+   copy:
+    src: redis-included.conf
+    dest: /opt/redis/redis-included.conf
+    owner: redis
+    group: redis
+   notify: 
+   - restart redis 6379
+   - restart redis 6380

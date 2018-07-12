@@ -1,10 +1,11 @@
 ---
-- hosts: redis-cluster-hosts
+- hosts: test
   user: root
   tasks:
-  - name: send public key to hosts
+  - name: 下发运行ansible用户家目录中公钥到目标主机指定用户家目录
     authorized_key:
         user: root
-        key: "{{ lookup('file', '/var/root/.ssh/id_rsa.pub') }}"
+        key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
         state: present # present 添加 absent 删除
         exclusive: no
+        manage_dir: yes

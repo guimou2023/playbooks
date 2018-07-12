@@ -1,0 +1,15 @@
+- name: Playbook print debug infomation.
+  hosts: test
+  gather_facts: F
+  vars: 
+     user: jingyong 
+  tasks: 
+      - name: Command run line 
+        stat: path=/etc/passwd
+        register: result 
+      - name: Debug info1 
+        debug: var=result verbosity=0
+      - name: Debug info2
+        debug: var=result.stdout verbosity=0
+#      - name: Debug info2
+#	debug: msg="test msg."
