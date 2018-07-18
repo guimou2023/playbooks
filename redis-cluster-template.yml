@@ -1,0 +1,6 @@
+---
+- hosts: redis-cluster-hosts
+  remote_user: root
+  gather_facts: True
+  roles:
+     - { role: install-redis-cluster-template, redis_version: 4.0.10, auth_password: rediscluster123, ruby_version: 2.4.4 }

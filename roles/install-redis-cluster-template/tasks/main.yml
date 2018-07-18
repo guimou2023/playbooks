@@ -1,0 +1,92 @@
+---
+# tasks file for install-redis-4.0.10-cluster
+ - name: 修改主机名
+   hostname:
+    name: "redis-{{ ansible_default_ipv4.address.split('.')[-1] }}"
+ - name: Install a list of packages
+   apt:
+     name: "{{ packages }}"
+   vars:
+     packages:
+     - make
+     - wget
+     - tcl8.5
+#   when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "16.04"
+ - name: 复制解压redis安装文件
+   unarchive:
+    src: redis-{{ redis_version }}.tar.gz
+    dest: /usr/local
+ - name: 编译redis
+   shell: cd deps && make hiredis lua jemalloc linenoise && cd .. && make && make install PREFIX=/usr/local
+   args:
+    chdir: /usr/local/redis-{{ redis_version }}
+ - name: 创建redis用户组
+   group:
+    name: redis
+    state: present 
+ - name: 创建redis用户
+   user: 
+    name: redis
+    groups: redis
+    createhome: no
+# Changed from createhome to create_home in version 2.5.
+    shell: /sbin/nologin
+ - name: 创建文件夹
+   file: 
+    dest: "{{ item }}"
+    state: directory
+    owner: redis
+    group: redis
+   with_items: ['/opt/redis/6379','/opt/redis/6380','/opt/redis/6381'] 
+ - name: 复制解压ruby安装文件
+   unarchive:
+    src: ruby-{{ ruby_version }}.tar.gz
+    dest: /usr/local
+# - name: 编译安装ruby
+#   shell: ./configure && make && make install PREFIX=/usr/local
+#   args:
+#    chdir: /usr/local/ruby-{{ ruby_version }}
+ - name: 添加ruby ppa源
+   apt_repository:
+    repo: ppa:brightbox/ruby-ng
+ - name: apt 安装 ruby
+   apt:
+    name: ruby2.3
+    state: present
+ - name: 复制解压rubygems安装文件
+   unarchive:
+    src: rubygems-2.7.7.tgz
+    dest: /usr/local
+ - name: 安装gem及redis-trib.rb
+   shell: mkdir -pv /var/lib/gems/2.3.0 && ruby setup.rb && gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/ && gem install redis && cp  /usr/local/redis-{{ redis_version }}/src/redis-trib.rb /usr/local/bin/ 
+   args:
+    chdir: /usr/local/rubygems-2.7.7
+ - name:  复制开机启动脚本
+   copy: 
+    src: "{{ item }}"
+    dest: "/etc/init.d"
+    mode: 0755
+   with_items: ['redis-server-6379','redis-server-6380']
+ - name: 设置开机启动软链接
+   shell: /usr/sbin/update-rc.d redis-server-6379 defaults 40
+ - name: 设置开机启动软链接
+   shell: /usr/sbin/update-rc.d redis-server-6380 defaults 40
+ - name: 复制配置文件
+   template:
+     src: "{{item.src}}"
+     dest: "{{item.dest}}"
+     owner: redis
+     group: redis
+     backup: yes
+   with_items:
+     - { src: "redis-6379.conf.j2", dest: "/opt/redis/6379/redis-6379.conf"}
+     - { src: "redis-6380.conf.j2", dest: "/opt/redis/6380/redis-6380.conf"}
+     - { src: "redis-6381.conf.j2", dest: "/opt/redis/6380/redis-6381.conf"}
+   notify: 
+   - restart redis 6379
+   - restart redis 6380
+   tags: uc
+ - name: 启动redis服务6379
+   service: name=redis-server-6379 state=started
+ - name: 启动redis服务6380
+   service: name=redis-server-6380 state=started

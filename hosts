@@ -1,0 +1,17 @@
+[redis-cluster-hosts]
+10.20.0.19
+10.20.0.51
+#10.20.0.19
+#10.70.0.[87:89]
+[test]
+10.20.0.19
+[redis-cluster-hosts:vars]
+ansible_ssh_private_key_file=/var/root/tx_masterkey.dms
+ansible_port=22
+ansible_ssh_user=root
+ansible_key_checking=False
+[test:vars]
+ansible_ssh_private_key_file=/var/root/tx_masterkey.dms
+ansible_port=22
+ansible_ssh_user=root
+ansible_key_checking=False
