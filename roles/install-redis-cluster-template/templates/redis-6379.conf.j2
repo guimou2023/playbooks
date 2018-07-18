@@ -7,7 +7,7 @@ cluster-require-full-coverage no
 masterauth {{ auth_password }}
 requirepass {{ auth_password }}
 daemonize yes
-port 637
+port 6379
 bind {{ ansible_default_ipv4.address }} 127.0.0.1
 pidfile /opt/redis/6379/redis_6379.pid
 logfile '/opt/redis/6379/redis-6379.log'

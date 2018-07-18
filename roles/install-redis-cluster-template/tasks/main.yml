@@ -11,7 +11,6 @@
      - make
      - wget
      - tcl8.5
-#   when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "16.04"
  - name: 复制解压redis安装文件
    unarchive:
     src: redis-{{ redis_version }}.tar.gz
