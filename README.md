@@ -1,6 +1,8 @@
 # playbooks
 ## 部署redis cluster
 ```
+git clone git@github.com:wuwuming/playbooks.git
+cd playbook
 # redis-cluster-hosts主机组中添加部署主机IP
 vim hosts 
 # 系统参数优化
