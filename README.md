@@ -3,7 +3,7 @@
 ```
 git clone git@github.com:wuwuming/playbooks.git
 cd playbook
-# redis-cluster-hosts主机组中添加部署主机IP
+# redis-cluster-hosts主机组中配置待部署主机IP及认证秘钥
 vim hosts 
 # 系统参数优化(修改了部分优化redis的系统参数)
 ansible -i hosts redis-cluster-hosts -m script -a files/redis_init_system_conf.sh -f3
