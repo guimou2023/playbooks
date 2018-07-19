@@ -1,11 +1,11 @@
 # playbooks
-## 部署redis cluster
+## 部署redis cluster(On ubuntu 14.04 or ubuntu 16.04)
 ```
 git clone git@github.com:wuwuming/playbooks.git
 cd playbook
 # redis-cluster-hosts主机组中添加部署主机IP
 vim hosts 
-# 系统参数优化
+# 系统参数优化(修改了部分优化redis的系统参数)
 ansible -i hosts redis-cluster-hosts -m script -a files/redis_init_system_conf.sh -f3
 # 部署单实例
 ansible-playbook -i hosts redis-cluster-template.yml -f3
