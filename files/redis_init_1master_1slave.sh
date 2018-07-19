@@ -14,7 +14,7 @@ r3=$?
 
 # 如果各主机redis单实例正常启动，创建集群
 if [ $r1 = 0 ] && [ $r2 = 0 ] && [ $r3 = 0 ];then
-sed -i  '/password =>/s/nil/"${password}"/' /var/lib/gems/2.3.0/gems/redis-4.0.1/lib/redis/client.rb
+sed -i  "/password =>/s/nil/'${password}'/" /var/lib/gems/2.3.0/gems/redis-4.0.1/lib/redis/client.rb
 echo yes | redis-trib.rb create  $IP1:6379  $IP2:6379  $IP3:6379 
 declare -A node_hash_dic
 counter=1
