@@ -1,5 +1,5 @@
 # playbooks
-## 部署redis cluster(On ubuntu 14.04 or ubuntu 16.04)
+## role部署redis cluster(On ubuntu 14.04 or ubuntu 16.04)
 ```
 git clone git@github.com:wuwuming/playbooks.git
 cd playbook
@@ -18,7 +18,11 @@ ansible -i hosts IP -m script -a files/redis_init_1master_2slave.sh
 ansible-playbook -i hosts redis-cluster-template.yml -f2 -tuc
 
 ```
-## 清理垃圾日志
+## 清理垃圾日志定时任务
 ansible all -m copy -a 'src=files/clean_log.sh dest=/tmp' -f10
 ansible tx-saas-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
 ansible tx-o-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
+## 发布mesos-agent
+修改部署主机IP及认证方式、脚本中mesos-serverIP
+ansible -i hosts test -m script -a 'files/deploy_mesos_agent.sh' -f15
+
