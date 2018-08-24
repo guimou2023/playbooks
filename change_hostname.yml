@@ -1,0 +1,7 @@
+---
+- hosts: test
+  user: root
+  tasks:
+  - name: 修改主机名
+    hostname:
+      name: "saas-newnode-{{ ansible_default_ipv4.address.split('.')[-1] }}"
