@@ -24,6 +24,11 @@ ansible all -m copy -a 'src=files/clean_log.sh dest=/tmp' -f10
 ansible tx-saas-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
 ansible tx-o-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
 ```
+## 发布consulClient
+```
+确定目标主机组并配置认证方式、修改脚本中consulServerIp
+ansible -i hosts test -m script -a 'files/deploy_consul_client.sh' -f15
+```
 ## 发布mesos-agent
 ```
 确定目标主机组并配置认证方式、修改脚本中mesosServerIp
