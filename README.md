@@ -19,10 +19,18 @@ ansible-playbook -i hosts redis-cluster-template.yml -f2 -tuc
 
 ```
 ## 清理垃圾日志定时任务
+```
 ansible all -m copy -a 'src=files/clean_log.sh dest=/tmp' -f10
 ansible tx-saas-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
 ansible tx-o-hosts -m cron -a "name='clean log and stdoutFile' hour=2 minute=30 user=root job='/bin/bash /tmp/clean_log.sh'"
+```
 ## 发布mesos-agent
-修改部署主机IP及认证方式、脚本中mesos-serverIP
+```
+确定目标主机组并配置认证方式、修改脚本中mesosServerIp
 ansible -i hosts test -m script -a 'files/deploy_mesos_agent.sh' -f15
-
+```
+## 修改主机名
+```
+修改yml文件中目标主机组及主机名格式
+ansible-playbook -i hosts change_hostname.yml -f15
+```
